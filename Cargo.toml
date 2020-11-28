@@ -1,0 +1,17 @@
+[package]
+name = "botnet"
+version = "0.1.0"
+authors = ["cardinal"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = "*"
+serde_derive = "*"
+ron = "*"
+serde_json = "*"
+err-derive = "*"
+reqwest = {version = "0.10.9", features = ["blocking"]}
+tokio = {version = "0.3.4", features = ["full"]}
+discord = "*"

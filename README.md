@@ -1,0 +1,1 @@
+the purpose of this repository is to bridge trello and discord through a rust library that uses trello's REST api. this will make it possible to control trello boards from discord, including notifications, adding cards, and browsing cards.
