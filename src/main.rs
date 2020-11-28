@@ -39,10 +39,19 @@ fn test_query() {
             Ok(Event::MessageCreate(mut message)) => {
                 let processor = Processor::new(&mut message, "trellobot");
                 if processor.mentions_me() {
-                    let words = processor.split(' ').collect();
-                    if words.contains("list") && words.contains("cards") {
+                    let words: Vec<String> = processor.split(' ').map(|s| s.to_string()).collect();
+                    if words.contains(&String::from("list")) && words.contains(&String::from("cards")) {
                         for simple_card in trellobot.get_cards("qvxlWnvg").unwrap().simplify() {
-                            println!("name: {} \n description: {}", simple_card.name, simple_card.desc);
+                            let msg = match simple_card.desc {
+                                Some(desc) => format!("name: {}, description: {}", simple_card.name, desc),
+                                None => format!("name: {}", simple_card.name),
+                            };
+                            let _ = discord_bot.send_message(
+                                message.channel_id,
+                                &msg,
+                                "",
+                                false,
+                            );
                         }
                     }
                 }

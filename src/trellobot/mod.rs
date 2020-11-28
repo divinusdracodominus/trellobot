@@ -10,6 +10,7 @@ use reqwest::{header::HeaderValue, Method, Url};
 use std::collections::HashMap;
 use std::default::Default;
 use std::error::Error;
+pub use crate::trellobot::Cards;
 
 use crate::bot::GenericBot;
 use crate::error::BotError;
@@ -95,9 +96,9 @@ impl TrelloBot {
 
     /// # Arguments
     /// id: the id of the board to search
-    pub fn get_cards(&mut self, id: &str) -> Result<String, Box<dyn Error>> {
+    pub fn get_cards(&mut self, id: &str) -> Result<Cards, Box<dyn Error>> {
         let root = format!("https://api.trello.com/1/boards/{}/cards", id);
-        Ok(self.get_item(&root)?)
+        Ok(serde_json::from_str(&self.get_item(&root)?)?)
     }
     /// for now this creates a virtually empty card
     pub fn create_card(&mut self, list: &str) -> Result<String, Box<dyn Error>> {

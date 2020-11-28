@@ -14,6 +14,12 @@ pub enum color {
     lime,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SimpleCard {
+    pub name: String,
+    pub desc: Option<String>,
+}
+
 /*#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum idAttachmentCover {
     null,
@@ -142,6 +148,7 @@ pub type Cards = Vec<Card>;
 
 pub trait CardList {
     fn build_id_map(&self) -> HashMap<String, String>;
+    fn simplify(&self) -> Vec<SimpleCard>;
 }
 
 impl CardList for Cards {
@@ -151,5 +158,12 @@ impl CardList for Cards {
             map.insert(card.name.clone(), card.shortLink.clone());
         }
         return map;
+    }
+    fn simplify(&self) -> Vec<SimpleCard> {
+        let mut outvec = Vec::with_capacity(self.capacity());
+        for card in self.iter() {
+            outvec.push(SimpleCard {name: card.name.clone(), desc: card.desc.clone()});
+        }
+        outvec
     }
 }
