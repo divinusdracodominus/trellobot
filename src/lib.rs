@@ -7,6 +7,5 @@ extern crate err_derive;
 extern crate serde_derive;
 pub mod bot;
 pub mod command;
-pub mod discordbot;
 pub mod error;
 pub mod trellobot;

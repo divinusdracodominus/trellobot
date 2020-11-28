@@ -6,6 +6,7 @@ use std::net::{IpAddr, Ipv4Addr};
 
 use botnet::bot::{GenericBot, Host};
 use botnet::trellobot::{Card, CardList, Cards, TrelloBot};
+use botnet::command::Processor;
 
 // secret key that I probably shouldn't share, but don't care right now
 //
@@ -31,14 +32,18 @@ fn test_query() {
         Discord::from_bot_token("")
             .unwrap();
 
-    let (mut connection, _) = discord.connect().expect("connection failed");
+    let (mut connection, _) = discord_bot.connect().expect("connection failed");
 
     loop {
         match connection.recv_event() {
-            Ok(Event::MessageCreate(message)) => {
-                for mention in message.mentions.iter() {
-                    if mention.name == String::from("trellobot") {
-                        // the bot was mentioned
+            Ok(Event::MessageCreate(mut message)) => {
+                let processor = Processor::new(&mut message, "trellobot");
+                if processor.mentions_me() {
+                    let words = processor.split(' ').collect();
+                    if words.contains("list") && words.contains("cards") {
+                        for simple_card in trellobot.get_cards("qvxlWnvg").unwrap().simplify() {
+                            println!("name: {} \n description: {}", simple_card.name, simple_card.desc);
+                        }
                     }
                 }
             }

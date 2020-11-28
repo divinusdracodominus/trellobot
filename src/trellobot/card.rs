@@ -30,7 +30,7 @@ pub enum object {
 }
 impl Default for object {
     fn default() -> Self {
-        Self::null
+        Self::emoji(None)
     }
 }
 
