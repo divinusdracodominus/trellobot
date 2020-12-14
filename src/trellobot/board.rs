@@ -1,3 +1,5 @@
+use crate::trellobot::SimpleCard;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PermLevel {
     public,
@@ -79,6 +81,15 @@ pub struct prefs {
     pub canBeOrg: bool,
     pub canBePrivate: bool,
     pub canInvite: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SimpleBoard {
+    /// same as board shortUrl used to fetch info on boards.
+    pub id: String,
+    pub name: String,
+    pub desc: String,
+    pub cards: Vec<SimpleCard>,
 }
 
 /// tempted to for the sake of efficiency make it a heap allocated type

@@ -1,3 +1,8 @@
+pub enum AccessRights {
+    Read,
+    Write,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct TrelloUser {
     pub id: String,

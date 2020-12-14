@@ -5,12 +5,12 @@ use users::*;
 mod board;
 pub use board::*;
 
+pub use crate::trellobot::Cards;
 use reqwest::blocking::{Client, Request};
 use reqwest::{header::HeaderValue, Method, Url};
 use std::collections::HashMap;
 use std::default::Default;
 use std::error::Error;
-pub use crate::trellobot::Cards;
 
 use crate::bot::GenericBot;
 use crate::error::BotError;
@@ -85,9 +85,9 @@ impl TrelloBot {
         let client = Client::new();
         Self { data, client }
     }
-    pub fn get_card(&mut self, id: &str) -> Result<String, Box<dyn Error>> {
+    pub fn get_card(&mut self, id: &str) -> Result<Card, Box<dyn Error>> {
         let root = format!("https://api.trello.com/1/cards/{}/", id);
-        Ok(self.get_item(&root)?)
+        Ok(serde_json::from_str(&self.get_item(&root)?)?)
     }
     pub fn get_board(&mut self, id: &str) -> Result<String, Box<dyn Error>> {
         let root = format!("https://api.trello.com/1/boards/{}", id);

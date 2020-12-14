@@ -14,10 +14,39 @@ pub enum color {
     lime,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SimpleCard {
+    /// same as card's shortUrl
+    pub id: String,
     pub name: String,
     pub desc: Option<String>,
+}
+impl SimpleCard {
+    pub fn ascii_fmt(&self) -> String {
+        if let Some(desc) = &self.desc {
+            if desc != "" {
+                return format!(
+                    "+ ----------------------
+                     + id: {}  
+                     + name: {} 
+                     + description: {} \n",
+                    self.id, self.name, desc
+                );
+            }
+        }
+        format!(
+            "+ ---------------------- 
+             + id: {} 
+             + name: {} \n",
+            self.id, self.name
+        )
+    }
+}
+
+impl From<&Card> for SimpleCard {
+    fn from(card: &Card) -> SimpleCard {
+        SimpleCard {id: card.shortLink.clone(), name: card.name.clone(), desc: card.desc.clone()}
+    }
 }
 
 /*#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -162,7 +191,11 @@ impl CardList for Cards {
     fn simplify(&self) -> Vec<SimpleCard> {
         let mut outvec = Vec::with_capacity(self.capacity());
         for card in self.iter() {
-            outvec.push(SimpleCard {name: card.name.clone(), desc: card.desc.clone()});
+            outvec.push(SimpleCard {
+                id: card.shortLink.clone(),
+                name: card.name.clone(),
+                desc: card.desc.clone(),
+            });
         }
         outvec
     }

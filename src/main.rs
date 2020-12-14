@@ -1,13 +1,15 @@
 #[macro_use]
 extern crate tokio;
+use daemonize::Daemonize;
 use discord::model::Event;
 use discord::Discord;
+use std::fs::File;
 use std::net::{IpAddr, Ipv4Addr};
 use std::sync::{Arc, Mutex};
 
 use botnet::bot::{GenericBot, Host};
-use botnet::trellobot::{Card, CardList, Cards, TrelloBot};
-use botnet::command::{Processor, Command};
+use botnet::commands::Command;
+use botnet::trellobot::{Card, CardList, Cards, SimpleCard, TrelloBot};
 
 // secret key that I probably shouldn't share, but don't care right now
 //
@@ -29,49 +31,18 @@ fn test_query() {
 
     let mut trellobot = Arc::new(Mutex::new(TrelloBot::from(bot)));
 
-    let mut discord_bot =
+    let discord_bot =
         Discord::from_bot_token("")
             .unwrap();
 
     let (mut connection, _) = discord_bot.connect().expect("connection failed");
-    let show_command = Command::new(&String::from("show"), |args| {
-        if args.len() < 1 {
-            return String::from("please provide more information in your request");
-        }
-        println!("args[0]: {}", args[0]);
-        match args[0].as_str(){
-            "cards" => {
-                if args.len() < 2 {
-                    String::from("please provide a board id")
-                }else{
-                    let mut bot = trellobot.lock().unwrap();
-                    let card_list = bot.get_cards(&args[1]).unwrap();
-                    let mut retstr = String::new();
-                    for card in card_list.iter() {
-                        retstr.push_str(&if let Some(desc) = &card.desc{
-                            if desc != "" {
-                                format!("name: {} \n description: {} \n", card.name, desc)
-                            }else{
-                                format!("name: {} \n", card.name)
-                            }
-                        }else {
-                            format!("name: {} \n", card.name)
-                        })
-                    }
-                    retstr
-                }
-            },
-            _ => String::from("unrecognized command please try again"),
-        }
-    });
-    let mut commands = Vec::new();
-    commands.push(show_command);
-
     loop {
         match connection.recv_event() {
             Ok(Event::MessageCreate(mut message)) => {
-                let mut processor = Processor::new(&mut message, "trellobot", &discord_bot, &commands);
-                processor.process();
+                if Command::check_mentions(&message) {
+                    let command = Command::handle(&message.content, trellobot.clone());
+                    discord_bot.send_message(message.channel_id, &command, "", false);
+                }
             }
             Ok(_) => {}
             Err(discord::Error::Closed(code, body)) => {
@@ -83,6 +54,25 @@ fn test_query() {
     }
 }
 
+fn switch_mode() -> Result<(), Box<dyn std::error::Error>> {
+    let stdout = File::create("/tmp/trellobot.out")?;
+    let stderr = File::create("/tmp/trellobot.err")?;
+
+    let daemonize = Daemonize::new()
+        .pid_file("/tmp/trellobot.pid")
+        .working_directory("/tmp")
+        .stdout(stdout)
+        .stderr(stderr)
+        .privileged_action(|| "Executed before drop priviliges");
+
+    match daemonize.start() {
+        Ok(_) => println!("Success, daemonized"),
+        Err(e) => eprintln!("Error, {}", e),
+    }
+    Ok(())
+}
+
 fn main() {
+    //switch_mode().unwrap();
     test_query();
 }
