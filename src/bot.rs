@@ -1,5 +1,5 @@
-use std::net::IpAddr;
 use crate::trellobot::TrelloError;
+use std::net::IpAddr;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum EncryptionState {

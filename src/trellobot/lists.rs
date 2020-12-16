@@ -1,5 +1,3 @@
-use crate::trellobot::TrelloItem;
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct List {
     pub id: String,

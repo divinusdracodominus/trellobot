@@ -1,7 +1,7 @@
-use crate::trellobot::{SimpleCard, Cards, TrelloError, TrelloBot, Lists};
-use std::collections::HashMap;
-use reqwest::blocking::{Request};
+use crate::trellobot::{Cards, Lists, SimpleCard, TrelloBot, TrelloError};
+use reqwest::blocking::Request;
 use reqwest::{header::HeaderValue, Method, Url};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PermLevel {
@@ -138,16 +138,16 @@ pub struct Board {
     pub enterpriseOwned: Option<String>,
 }
 
-impl Board{
+impl Board {
     pub fn get_cards(id: &str, bot: &mut TrelloBot) -> Result<Cards, TrelloError> {
         let root = format!("https://api.trello.com/1/boards/{}/cards", id);
         Ok(serde_json::from_str(&bot.get_item(&root)?)?)
     }
-    pub fn get_list(id: &str, bot: &mut TrelloBot) -> Result<Lists, TrelloError>{
+    pub fn get_list(id: &str, bot: &mut TrelloBot) -> Result<Lists, TrelloError> {
         let root = format!("https://api.trello.com/1/boards/{}/lists", id);
         Ok(serde_json::from_str(&bot.get_item(&root)?)?)
     }
-    pub fn create_board(config: BoardConfig, bot: &mut TrelloBot) -> Result<String, TrelloError> {
+    pub fn create(config: BoardConfig, bot: &mut TrelloBot) -> Result<String, TrelloError> {
         let key = bot.get_bot().get_key()?;
         let token = bot.get_bot().get_token()?;
         let mut request_uri = String::new();
@@ -204,7 +204,7 @@ pub struct BoardConfig {
 }
 
 impl BoardConfig {
-    pub fn into_hashmap(self) -> HashMap<&'static str, String>{
+    pub fn into_hashmap(self) -> HashMap<&'static str, String> {
         let mut map = HashMap::new();
         map.insert("name", self.name);
         map.insert("defaultLabels", format!("{}", self.defaultLabels));
@@ -255,7 +255,6 @@ impl Default for BoardConfig {
             prefs_cardCovers: true,
             prefs_background: String::from("blue"),
             prefs_cardAging: String::from("regular"),
-
         }
     }
 }

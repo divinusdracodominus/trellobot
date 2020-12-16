@@ -1,5 +1,5 @@
+use crate::trellobot::{TrelloBot, TrelloError, TrelloItem};
 use std::collections::HashMap;
-use crate::trellobot::{TrelloBot, TrelloItem, TrelloError};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum color {
@@ -25,7 +25,7 @@ pub struct SimpleCard {
 impl SimpleCard {
     pub fn ascii_fmt(&self) -> String {
         if let Some(desc) = &self.desc {
-            if desc != "" {
+            if !desc.is_empty() {
                 return format!(
                     "+ ----------------------
                      + id: {}  
@@ -46,7 +46,11 @@ impl SimpleCard {
 
 impl From<&Card> for SimpleCard {
     fn from(card: &Card) -> SimpleCard {
-        SimpleCard {id: card.shortLink.clone(), name: card.name.clone(), desc: card.desc.clone()}
+        SimpleCard {
+            id: card.shortLink.clone(),
+            name: card.name.clone(),
+            desc: card.desc.clone(),
+        }
     }
 }
 
@@ -196,7 +200,7 @@ impl CardList for Cards {
         for card in self.iter() {
             map.insert(card.name.clone(), card.shortLink.clone());
         }
-        return map;
+        map
     }
     fn simplify(&self) -> Vec<SimpleCard> {
         let mut outvec = Vec::with_capacity(self.capacity());
@@ -208,5 +212,48 @@ impl CardList for Cards {
             });
         }
         outvec
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CardConfig {
+    pub name: String,
+    pub desc: String,
+    /// position of the card, either top, bottom, or a float
+    pub pos: Option<String>,
+    /// when is the card due, honestly still aint sure about the type of date format
+    pub due: String,
+    pub dueComplete: bool,
+    /// the id of the list to add the card to, this field is requred
+    pub idList: String,
+    /// the ids of the people to attach to the card, by my personal reasoning I have made it
+    /// so that this shouldn't be blank
+    pub idMembers: Vec<String>,
+    /// the id of labels to add to the card
+    pub idLabels: Option<Vec<String>>,
+    pub urlSource: Option<String>,
+    pub fileSource: Option<String>,
+    /// the id of a card to copy
+    pub idCardSource: Option<String>,
+    /// what things to copy over values: comma seperate list of all, attachments, checklists, comments, due, labels, members, stickers
+    pub keepFromSource: Option<String>,
+    /// used by the map powerup
+    pub address: Option<String>,
+    /// used by map power up
+    pub locationName: Option<String>,
+    /// used by map power up
+    pub coordinates: Option<String>,
+}
+
+impl CardConfig {
+    pub fn into_hashmap(self) -> HashMap<&'static str, String> {
+        let mut map = HashMap::new();
+        map.insert("name", self.name);
+        map.insert("desc", self.desc);
+        if let Some(pos) = self.pos {
+            map.insert("pos", pos);
+        }
+        map.insert("due", self.due);
+        map
     }
 }

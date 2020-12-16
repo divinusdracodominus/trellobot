@@ -1,15 +1,11 @@
-#[macro_use]
-extern crate tokio;
-use daemonize::Daemonize;
 use discord::model::Event;
 use discord::Discord;
-use std::fs::File;
 use std::net::{IpAddr, Ipv4Addr};
 use std::sync::{Arc, Mutex};
 
 use botnet::bot::{GenericBot, Host};
 use botnet::commands::Command;
-use botnet::trellobot::{Card, CardList, Cards, SimpleCard, TrelloBot};
+use botnet::trellobot::TrelloBot;
 
 // secret key that I probably shouldn't share, but don't care right now
 //
@@ -22,19 +18,15 @@ fn test_query() {
     };
     
 
-    let mut trellobot = Arc::new(Mutex::new(TrelloBot::from(bot)));
-
-    let discord_bot =
-        Discord::from_bot_token("")
-            .unwrap();
-
     let (mut connection, _) = discord_bot.connect().expect("connection failed");
     loop {
         match connection.recv_event() {
-            Ok(Event::MessageCreate(mut message)) => {
+            Ok(Event::MessageCreate(message)) => {
                 if Command::check_mentions(&message) {
                     let command = Command::handle(&message.content, trellobot.clone());
-                    discord_bot.send_message(message.channel_id, &command, "", false);
+                    discord_bot
+                        .send_message(message.channel_id, &command, "", false)
+                        .unwrap();
                 }
             }
             Ok(_) => {}
@@ -47,7 +39,9 @@ fn test_query() {
     }
 }
 
-fn switch_mode() -> Result<(), Box<dyn std::error::Error>> {
+// this is used for when the bot should run as a Daemon
+/*fn switch_mode() -> Result<(), Box<dyn std::error::Error>> {
+    use daemonize::Daemonize;
     let stdout = File::create("/tmp/trellobot.out")?;
     let stderr = File::create("/tmp/trellobot.err")?;
 
@@ -63,7 +57,7 @@ fn switch_mode() -> Result<(), Box<dyn std::error::Error>> {
         Err(e) => eprintln!("Error, {}", e),
     }
     Ok(())
-}
+}*/
 
 fn main() {
     //switch_mode().unwrap();

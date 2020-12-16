@@ -1,36 +1,20 @@
-use structopt::StructOpt;
+use crate::trellobot::{Board, Card, CardList, SimpleCard, TrelloBot, TrelloItem};
 use discord::model::Message;
 use std::sync::{Arc, Mutex};
-use crate::trellobot::{TrelloBot, CardList, SimpleCard, Card, TrelloItem, Board};
+use structopt::StructOpt;
 
 #[derive(Debug, StructOpt, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[structopt(name = "trellobot")]
-pub struct Command{
+pub struct Command {
     /// used with show command to get full text of a card
     #[structopt(short, long)]
     pub full: bool,
-    /// id of the board to use
+    /// the type of element being used
     #[structopt(short, long)]
-    pub board: Option<String>,
-    /// specify list by id
-    #[structopt(long)]
-    pub list_id: Option<String>,
-    #[structopt(long)]
-    pub card_id: Option<String>,
-     /// id of the card to search for
-    #[structopt(short, long)]
-    pub card: Option<String>,
-    /// id of the list to add to or display cards from
-    #[structopt(short, long)]
-    pub list: Option<String>,
-    /// list the lists on a board
-    #[structopt(short, long)]
-    pub get_lists: Option<String>,
+    r#type: String,
     /// used for creating a card, this is the description on that card
     #[structopt(short, long)]
     pub description: Option<String>,
-    #[structopt(long)]
-    pub create_card: Option<String>,
     /// due date of the card
     #[structopt(long)]
     due: Option<String>,
@@ -38,28 +22,40 @@ pub struct Command{
     create: bool,
     #[structopt(short = "S", long)]
     show: bool,
+    #[structopt(short = "A", long)]
+    attach: bool,
+    /// the id of the element to operate on
+    #[structopt(short, long)]
+    id: Option<String>,
+    /// the name of the element to operate on
+    #[structopt(short, long)]
+    name: Option<String>,
+    /// move card, potential example @trellobot -M -t card,list -i "cardid","listid(target)"
+    #[structopt(short = "M", long)]
+    r#move: bool,
+    /// search for an id by name
+    #[structopt(short = "F", long)]
+    find: bool,
 }
 
 impl Command {
-    pub fn handle(text: &str, trellobot: Arc<Mutex<TrelloBot>>) -> String{
-        match Self::from_iter_safe(text.split(" ")) {
+    pub fn handle(text: &str, trellobot: Arc<Mutex<TrelloBot>>) -> String {
+        match Self::from_iter_safe(text.split(' ')) {
             Ok(command) => {
                 if command.show && command.create {
                     String::from("-C, and -S, cannot be used together")
-                }
-                else if command.show {
+                } else if command.show {
                     show(&command, trellobot)
-                }
-                else if command.create{
+                } else if command.create {
                     create(&command, trellobot)
-                }else{
+                } else {
                     String::from("either -S, or -C must be used")
                 }
-            },
+            }
             Err(e) => e.message,
         }
     }
-    pub fn check_mentions(message: &Message) -> bool{
+    pub fn check_mentions(message: &Message) -> bool {
         for user in &message.mentions {
             if user.name == "trellobot" && message.author.name != "trellobot" {
                 return true;
@@ -69,38 +65,14 @@ impl Command {
     }
 }
 
-fn show(command: &Command, trellobot: Arc<Mutex<TrelloBot>>) -> String {
-    if let Some(board) = &command.board {
-        let mut bot = trellobot.lock().unwrap();
-        match Board::get_cards(&board, &mut bot) {
-            Ok(cards) => {
-                if command.full {
-                    return format!("{:?}", cards);
-                }
-                return format!("{:?}", cards.simplify());
-            },
-            Err(e) => {
-                return format!("error: {}", e);
-            }
-        }
-    }
-    if let Some(card) = &command.card {
-        let mut bot = trellobot.lock().unwrap();
-        match Card::get(&card, &mut bot) {
-            Ok(card) => {
-                if command.full {
-                    return format!("{:?}", card);
-                }
-                return SimpleCard::from(&card).ascii_fmt();
-            },
-            Err(e) => {
-                return format!("error: {}", e);
-            }
-        }
-    }
-    String::from("unrecognized option configuration")
+fn show(_command: &Command, _trellobot: Arc<Mutex<TrelloBot>>) -> String {
+    String::from("unimplemented")
 }
 
-fn create(command: &Command, trellobot: Arc<Mutex<TrelloBot>>) -> String {
+fn create(_command: &Command, _trellobot: Arc<Mutex<TrelloBot>>) -> String {
+    String::from("unimplemented")
+}
+
+fn attach(_command: &Command, _trellobot: Arc<Mutex<TrelloBot>>) -> String {
     String::from("unimplemented")
 }

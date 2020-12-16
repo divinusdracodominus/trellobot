@@ -1,7 +1,5 @@
 mod card;
 pub use card::*;
-mod users;
-use users::*;
 mod board;
 pub use board::*;
 pub mod lists;
@@ -11,8 +9,6 @@ pub use crate::trellobot::Cards;
 use reqwest::blocking::{Client, Request};
 use reqwest::{header::HeaderValue, Method, Url};
 use std::collections::HashMap;
-use std::default::Default;
-use std::error::Error;
 
 use crate::bot::GenericBot;
 pub mod error;
@@ -21,7 +17,8 @@ pub use error::*;
 pub trait TrelloItem {
     type Error: std::error::Error;
     fn get(id: &str, bot: &mut TrelloBot) -> Result<Self, Self::Error>
-    where Self: Sized;
+    where
+        Self: Sized;
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -47,22 +44,7 @@ impl<'a> Rest<'a> {
             "accept",
             HeaderValue::from_bytes(&String::from("application/json").into_bytes()).unwrap(),
         );
-        return request;
-    }
-    pub fn build_post(&self) -> Request {
-        let mut request_uri = String::new();
-        request_uri.push_str(&self.root);
-        request_uri.push('?');
-        for (k, v) in self.table.iter() {
-            request_uri.push_str(&format!("{}={}&", k, v));
-        }
-        request_uri.pop();
-        let mut request = Request::new(Method::POST, Url::parse(&request_uri).unwrap());
-        request.headers_mut().insert(
-            "accept",
-            HeaderValue::from_bytes(&String::from("application/json").into_bytes()).unwrap(),
-        );
-        return request;
+        request
     }
     pub fn new(root: &'a str) -> Self {
         Self {
@@ -129,7 +111,7 @@ impl TrelloBot {
         let request = rest.build_request();
         Ok(self.client.execute(request)?.text()?)
     }
-    fn exec(&mut self, request: Request) -> Result<String, TrelloError>{
+    fn exec(&mut self, request: Request) -> Result<String, TrelloError> {
         Ok(self.client.execute(request)?.text()?)
     }
 }
