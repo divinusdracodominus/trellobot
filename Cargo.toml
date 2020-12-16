@@ -15,3 +15,9 @@ err-derive = "*"
 reqwest = {version = "0.10.9", default-features = false, features = ["blocking", "rustls-tls"]}
 tokio = {version = "0.3.4", features = ["full"]}
 discord = {git = "https://github.com/SpaceManiac/discord-rs"}
+daemonize = "*"
+wasmtime = "*"
+structopt = "*"
+lazy_static = "*"
+hashmap_derive = "*"
+from_map = "*"

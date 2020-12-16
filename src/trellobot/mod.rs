@@ -4,6 +4,8 @@ mod users;
 use users::*;
 mod board;
 pub use board::*;
+pub mod lists;
+pub use lists::*;
 
 pub use crate::trellobot::Cards;
 use reqwest::blocking::{Client, Request};
@@ -13,7 +15,14 @@ use std::default::Default;
 use std::error::Error;
 
 use crate::bot::GenericBot;
-use crate::error::BotError;
+pub mod error;
+pub use error::*;
+
+pub trait TrelloItem {
+    type Error: std::error::Error;
+    fn get(id: &str, bot: &mut TrelloBot) -> Result<Self, Self::Error>
+    where Self: Sized;
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Rest<'a> {
@@ -81,11 +90,14 @@ pub struct TrelloBot {
 }
 
 impl TrelloBot {
+    pub(crate) fn get_bot(&self) -> &GenericBot {
+        &self.data
+    }
     pub fn from_data(data: GenericBot) -> Self {
         let client = Client::new();
         Self { data, client }
     }
-    pub fn get_card(&mut self, id: &str) -> Result<Card, Box<dyn Error>> {
+    /*pub fn get_card(&mut self, id: &str) -> Result<Card, Box<dyn Error>> {
         let root = format!("https://api.trello.com/1/cards/{}/", id);
         Ok(serde_json::from_str(&self.get_item(&root)?)?)
     }
@@ -109,12 +121,15 @@ impl TrelloBot {
         rest.insert("idList", list);
         let request = rest.build_post();
         Ok(self.client.execute(request)?.text()?)
-    }
-    fn get_item(&mut self, root: &str) -> Result<String, Box<dyn Error>> {
+    }*/
+    fn get_item(&mut self, root: &str) -> Result<String, TrelloError> {
         let mut rest = Rest::new(&root);
         rest.insert("key", self.data.get_key()?);
         rest.insert("token", self.data.get_token()?);
         let request = rest.build_request();
+        Ok(self.client.execute(request)?.text()?)
+    }
+    fn exec(&mut self, request: Request) -> Result<String, TrelloError>{
         Ok(self.client.execute(request)?.text()?)
     }
 }

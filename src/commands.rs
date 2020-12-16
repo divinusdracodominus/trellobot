@@ -1,7 +1,7 @@
 use structopt::StructOpt;
 use discord::model::Message;
 use std::sync::{Arc, Mutex};
-use crate::trellobot::{TrelloBot, CardList, SimpleCard};
+use crate::trellobot::{TrelloBot, CardList, SimpleCard, Card, TrelloItem, Board};
 
 #[derive(Debug, StructOpt, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[structopt(name = "trellobot")]
@@ -12,15 +12,20 @@ pub struct Command{
     /// id of the board to use
     #[structopt(short, long)]
     pub board: Option<String>,
-    /// name of the card to search for
-    #[structopt(short, long)]
-    pub name: Option<String>,
-    /// id of the card to search for
+    /// specify list by id
+    #[structopt(long)]
+    pub list_id: Option<String>,
+    #[structopt(long)]
+    pub card_id: Option<String>,
+     /// id of the card to search for
     #[structopt(short, long)]
     pub card: Option<String>,
     /// id of the list to add to or display cards from
     #[structopt(short, long)]
     pub list: Option<String>,
+    /// list the lists on a board
+    #[structopt(short, long)]
+    pub get_lists: Option<String>,
     /// used for creating a card, this is the description on that card
     #[structopt(short, long)]
     pub description: Option<String>,
@@ -67,7 +72,7 @@ impl Command {
 fn show(command: &Command, trellobot: Arc<Mutex<TrelloBot>>) -> String {
     if let Some(board) = &command.board {
         let mut bot = trellobot.lock().unwrap();
-        match bot.get_cards(&board) {
+        match Board::get_cards(&board, &mut bot) {
             Ok(cards) => {
                 if command.full {
                     return format!("{:?}", cards);
@@ -81,7 +86,7 @@ fn show(command: &Command, trellobot: Arc<Mutex<TrelloBot>>) -> String {
     }
     if let Some(card) = &command.card {
         let mut bot = trellobot.lock().unwrap();
-        match bot.get_card(&card) {
+        match Card::get(&card, &mut bot) {
             Ok(card) => {
                 if command.full {
                     return format!("{:?}", card);

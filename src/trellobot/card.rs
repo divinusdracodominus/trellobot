@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::trellobot::{TrelloBot, TrelloItem, TrelloError};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum color {
@@ -136,6 +137,15 @@ pub struct Card {
     pub url: String,
     pub cover: cover,
 }
+
+impl TrelloItem for Card {
+    type Error = TrelloError;
+    fn get(id: &str, bot: &mut TrelloBot) -> Result<Self, Self::Error> {
+        let root = format!("https://api.trello.com/1/cards/{}/", id);
+        Ok(serde_json::from_str(&bot.get_item(&root)?)?)
+    }
+}
+
 impl Card {
     pub fn as_hashmap(&self) -> HashMap<&str, String> {
         let mut map = HashMap::new();

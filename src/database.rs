@@ -10,12 +10,5 @@ pub enum LoadError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Database {
     pub organization: String,
-    pub root: PathBuf,
-    pub boards: Vec<PathBuf>,
-}
-
-impl Database {
-    pub fn try_load(filename: &str) -> Result<Self, LoadError> {
-
-    }
+    pub boards: Vec<SimpleBoard>,
 }

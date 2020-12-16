@@ -1,5 +1,5 @@
-use crate::error::BotError;
 use std::net::IpAddr;
+use crate::trellobot::TrelloError;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum EncryptionState {
@@ -46,16 +46,16 @@ impl GenericBot {
             host,
         }
     }
-    pub fn get_key(&self) -> Result<&str, BotError> {
+    pub fn get_key(&self) -> Result<&str, TrelloError> {
         match self.api_key.as_ref() {
             Some(key) => Ok(key),
-            None => Err(BotError::MissingKey),
+            None => Err(TrelloError::MissingKey),
         }
     }
-    pub fn get_token(&self) -> Result<&str, BotError> {
+    pub fn get_token(&self) -> Result<&str, TrelloError> {
         match self.token.as_ref() {
             Some(token) => Ok(token),
-            None => Err(BotError::MissingKey),
+            None => Err(TrelloError::MissingKey),
         }
     }
 }

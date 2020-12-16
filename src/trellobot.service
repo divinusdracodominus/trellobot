@@ -1,0 +1,6 @@
+[Unit]
+Description=Trellobot Service
+
+[Service]
+Type=Simple
+ExecStart=/home/cardinal/botnet/target/release/botnet
