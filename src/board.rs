@@ -1,6 +1,4 @@
-use crate::trellobot::{Cards, Lists, SimpleCard, TrelloBot, TrelloError};
-use reqwest::blocking::Request;
-use reqwest::{header::HeaderValue, Method, Url};
+use crate::{Cards, Member, Lists, SimpleCard, TrelloBot, TrelloError};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -28,21 +26,11 @@ pub struct ScaledImage {
     url: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct perBoard {
-    status: String,
-    disabledAt: u32,
-    warnAt: u32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct attachments {
-    perBoard: perBoard,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq)]
 pub struct limits {
-    attachments: attachments,
+    status: Option<String>,
+    disableAt: Option<i32>,
+    warnAt: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -125,6 +113,8 @@ pub struct Board {
     pub starred: Option<bool>,
     pub memberships: Option<String>,
     /// this is the id used as a parameter to get requests that interact with the trello servers
+    /// problem is that trello doesn't always return in when getting a board, I guess because it is needed to 
+    /// submit the get request
     pub shortLink: Option<String>,
     pub subscribed: Option<bool>,
     pub powerUps: Option<String>,
@@ -139,33 +129,23 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn get_cards(id: &str, bot: &mut TrelloBot) -> Result<Cards, TrelloError> {
-        let root = format!("https://api.trello.com/1/boards/{}/cards", id);
+    pub fn get_cards(&self, bot: &mut TrelloBot) -> Result<Cards, TrelloError> {
+        let root = format!("https://api.trello.com/1/boards/{}/cards", self.shortLink.as_ref().unwrap());
         Ok(serde_json::from_str(&bot.get_item(&root)?)?)
     }
-    pub fn get_list(id: &str, bot: &mut TrelloBot) -> Result<Lists, TrelloError> {
-        let root = format!("https://api.trello.com/1/boards/{}/lists", id);
+    pub fn get_lists(&self, bot: &mut TrelloBot) -> Result<Lists, TrelloError> {
+        let root = format!("https://api.trello.com/1/boards/{}/lists", self.shortLink.as_ref().unwrap());
         Ok(serde_json::from_str(&bot.get_item(&root)?)?)
     }
     pub fn create(config: BoardConfig, bot: &mut TrelloBot) -> Result<String, TrelloError> {
-        let key = bot.get_bot().get_key()?;
-        let token = bot.get_bot().get_token()?;
-        let mut request_uri = String::new();
-        request_uri.push_str("https://api.trello.com/1/boards");
-        request_uri.push('?');
-        request_uri.push_str(&format!("key={}&", key));
-        request_uri.push_str(&format!("token={}&", token));
-        let configs = config.into_hashmap().into_iter();
-        for (k, v) in configs {
-            request_uri.push_str(&format!("{}={}&", k, v));
-        }
-        request_uri.pop();
-        let mut request = Request::new(Method::POST, Url::parse(&request_uri).unwrap());
-        request.headers_mut().insert(
-            "accept",
-            HeaderValue::from_bytes(&String::from("application/json").into_bytes()).unwrap(),
-        );
-        Ok(bot.exec(request)?)
+        bot.create_object("https://api.trello.com/1/boards", &config.into_hashmap())
+    }
+    pub fn delete(&self, bot: &mut TrelloBot) -> Result<String, TrelloError> {
+        bot.delete_item(&format!("https://api.trello.com/1/boards/{}", self.id))
+    }
+    pub fn get_members(&self, bot: &mut TrelloBot) -> Result<String, TrelloError>{
+        let root = format!("https://api.trello.com/1/boards/{}/cards", self.shortLink.as_ref().unwrap());
+        bot.get_item(&root)
     }
 }
 

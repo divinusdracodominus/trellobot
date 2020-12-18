@@ -1,6 +1,6 @@
+use botnet::bot::{GenericBot, Host};
+use botnet::trellobot::{color, Label, LabelConfig, TrelloBot};
 use std::net::{IpAddr, Ipv4Addr};
-use trellobot::{Board, BoardConfig, TrelloBot};
-use trellobot::{GenericBot, Host};
 
 fn main() {
     let host = Host {
@@ -18,8 +18,8 @@ fn main() {
     );
 
     let mut trellobot = TrelloBot::from(bot);
-    let result = Board::create(
-        BoardConfig::default().name("Trellobot test board"),
+    let result = Label::create(
+        LabelConfig::new("wombie", color::blue, "5bee29714a832070b2832fe3"),
         &mut trellobot,
     )
     .unwrap();

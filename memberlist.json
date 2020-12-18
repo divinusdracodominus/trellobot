@@ -1,0 +1,27 @@
+[
+    {
+        "id":"5bee29714a832070b2832fe4",
+        "idMember":"5b8811c85d2981408fb4ff9b",
+        "memberType":"admin",
+        "unconfirmed":false,
+        "deactivated":false
+    },{
+        "id":"5bee37e5850812717d2be406",
+        "idMember":"5b880f18736d3b3dead937d9",
+        "memberType":"normal",
+        "unconfirmed":false,
+        "deactivated":false
+    },{
+        "id":"5bee381c84621d4b8da77729",
+        "idMember":"5b880f6ac74ce968f469b7bb",
+        "memberType":"normal",
+        "unconfirmed":false,
+        "deactivated":false
+    },{
+        "id":"5bee38ceba8fa1100ffa3afd",
+        "idMember":"5bee38ceba8fa1100ffa3af4",
+        "memberType":"normal",
+        "unconfirmed":false,
+        "deactivated":false
+    }
+]

@@ -1,4 +1,5 @@
-{"id":"5bee29714a832070b2832fe3",
+{
+    "id":"5bee29714a832070b2832fe3",
     "name":"Robotics - coding",
     "desc":"",
     "descData":null,
@@ -42,44 +43,4 @@
                 "width":1024,
                 "height":605,
                 "url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/1024x605/0e8721023bcda77936db5269b917f7f4/photo-1542215532-61c9832dae1f.jpg"
-            },{
-                "width":2048,
-                "height":1210,
-                "url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2048x1210/2f69ded95d5c1cfcd60f1f779d2a8523/photo-1542215532-61c9832dae1f.jpg"
-            },{
-                "width":1280,
-                "height":757,
-                "url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/1280x757/5429e531c9c544ef62af22580c0cd1cd/photo-1542215532-61c9832dae1f.jpg"
-            },{
-                "width":1920,
-                "height":1135,
-                "url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/1920x1135/6b991a46275f26d5f43e2a865c8e7a39/photo-1542215532-61c9832dae1f.jpg"
-            },{
-                "width":2560,
-                "height":1513,
-                "url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2560x1513/080cd4a3cd5b6aa46e524773f03411f4/photo-1542215532-61c9832dae1f"
-            }
-        ],
-        "backgroundTile":false,
-        "backgroundBrightness":"dark",
-        "backgroundBottomColor":"#070913",
-        "backgroundTopColor":"#1b3142",
-        "canBePublic":true,
-        "canBeEnterprise":true,
-        "canBeOrg":true,
-        "canBePrivate":true,
-        "canInvite":true
-    },
-    "labelNames":{
-        "green":"",
-        "yellow":"",
-        "orange":"",
-        "red":"",
-        "purple":"",
-        "blue":"",
-        "sky":"",
-        "lime":"",
-        "pink":"",
-        "black":""
-    }
-}
+            },{"width":2048,"height":1210,"url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2048x1210/2f69ded95d5c1cfcd60f1f779d2a8523/photo-1542215532-61c9832dae1f.jpg"},{"width":1280,"height":757,"url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/1280x757/5429e531c9c544ef62af22580c0cd1cd/photo-1542215532-61c9832dae1f.jpg"},{"width":1920,"height":1135,"url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/1920x1135/6b991a46275f26d5f43e2a865c8e7a39/photo-1542215532-61c9832dae1f.jpg"},{"width":2560,"height":1513,"url":"https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2560x1513/080cd4a3cd5b6aa46e524773f03411f4/photo-1542215532-61c9832dae1f"}],"backgroundTile":false,"backgroundBrightness":"dark","backgroundBottomColor":"#070913","backgroundTopColor":"#1b3142","canBePublic":true,"canBeEnterprise":true,"canBeOrg":true,"canBePrivate":true,"canInvite":true},"labelNames":{"green":"","yellow":"","orange":"","red":"","purple":"","blue":"","sky":"","lime":"","pink":"","black":""}}

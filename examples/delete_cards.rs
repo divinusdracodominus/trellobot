@@ -1,6 +1,6 @@
 use std::net::{IpAddr, Ipv4Addr};
-use trellobot::{Board, BoardConfig, TrelloBot};
-use trellobot::{GenericBot, Host};
+use trellobot::{Card, TrelloBot};
+use trellobot::{GenericBot, Host, Board};
 
 fn main() {
     let host = Host {
@@ -18,10 +18,8 @@ fn main() {
     );
 
     let mut trellobot = TrelloBot::from(bot);
-    let result = Board::create(
-        BoardConfig::default().name("Trellobot test board"),
-        &mut trellobot,
-    )
-    .unwrap();
-    println!("result: {}", result);
+    for card in Board::get_cards("qvxlWnvg", &mut trellobot).unwrap().iter() {
+        //println!("{}", card.delete(&mut trellobot).unwrap());
+        println!("card: {}", card.delete(&mut trellobot).unwrap());
+    }
 }

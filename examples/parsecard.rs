@@ -1,4 +1,4 @@
-use botnet::trellobot::{Card, CardList, Cards};
+use trellobot::{Card, CardList, Cards};
 use std::fs::File;
 use std::io::Read;
 

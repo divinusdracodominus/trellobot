@@ -1,7 +1,7 @@
-use crate::trellobot::{Board, Card, CardList, SimpleCard, TrelloBot, TrelloItem};
 use discord::model::Message;
 use std::sync::{Arc, Mutex};
 use structopt::StructOpt;
+use trellobot::{Board, Card, CardList, SimpleCard, TrelloBot, TrelloItem};
 
 #[derive(Debug, StructOpt, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[structopt(name = "trellobot")]

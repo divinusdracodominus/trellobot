@@ -1,5 +1,5 @@
 [package]
-name = "botnet"
+name = "trellobot"
 version = "0.1.0"
 authors = ["cardinal"]
 edition = "2018"
@@ -19,5 +19,3 @@ daemonize = "*"
 wasmtime = "*"
 structopt = "*"
 lazy_static = "*"
-hashmap_derive = "*"
-from_map = "*"

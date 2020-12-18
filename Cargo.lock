@@ -154,26 +154,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "botnet"
-version = "0.1.0"
-dependencies = [
- "daemonize",
- "discord",
- "err-derive",
- "from_map",
- "hashmap_derive",
- "lazy_static",
- "reqwest",
- "ron",
- "serde",
- "serde_derive",
- "serde_json",
- "structopt",
- "tokio 0.3.4",
- "wasmtime",
-]
-
-[[package]]
 name = "boxfnonce"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -655,15 +635,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "from_map"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99f31122ab0445ff8cee420b805f24e07683073815de1dd276ee7d588d301700"
-dependencies = [
- "hashmap_derive",
-]
-
-[[package]]
 name = "fuchsia-cprng"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -825,17 +796,6 @@ name = "hashbrown"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d7afe4a420e3fe79967a00898cc1f4db7c8a49a9333a29f8a4bd76a253d5cd04"
-
-[[package]]
-name = "hashmap_derive"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb30bf173e72cc31b5265dac095423ca14e7789ff7c3b0e6096a37a996f12883"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "heck"
@@ -2535,6 +2495,24 @@ name = "traitobject"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "efd1f82c56340fdf16f2a953d7bda4f8fdffba13d93b00844c25572110b26079"
+
+[[package]]
+name = "trellobot"
+version = "0.1.0"
+dependencies = [
+ "daemonize",
+ "discord",
+ "err-derive",
+ "lazy_static",
+ "reqwest",
+ "ron",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "structopt",
+ "tokio 0.3.4",
+ "wasmtime",
+]
 
 [[package]]
 name = "try-lock"
